@@ -2,3 +2,4 @@ node_modules/
 /**/target/
 session.txt
 package-lock.json
+.*config

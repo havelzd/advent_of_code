@@ -30,7 +30,7 @@ init_parser.add_argument("day", type=int, help="The day of the advent of code")
 init_parser.add_argument("-t", "--template", required=False,
                          help="Path to template")
 init_parser.add_argument(
-    "-i", "--input", required=False, help="The directory to save the input (relative to year/day dir)")
+    "-i", "--input", required=False, help="Output path/name")
 
 
 submit_parser = subparsers.add_parser("submit", help="Submit solution")
@@ -57,7 +57,7 @@ def __init_solution(year, day, template_dir, input_dir, sessid):
 
     # fetch input into provided directory
     if input_dir:
-        os.makedirs(f"{year}/{day}/{input_dir}", exist_ok=True)
+        # os.makedirs(f"{year}/{day}/{input_dir}", exist_ok=True)
         __fetch_input(year, day, sessid, input_dir)
 
 
@@ -76,14 +76,12 @@ def __fetch_input(year, day, session, input_dir):
     year_full = year if year >= 2000 else year + 2000
     curl_cmd = f"curl -H 'Cookie: session={session}' " + \
         f"https://adventofcode.com/{year_full}/day/{day}/input" + \
-        f" > {year}/{day}/{input_dir}/input.txt"
+        f" > {year}/{day}/{input_dir}"
     return os.system(curl_cmd)
 
 
 if __name__ == "__main__":
-    print(__file__)
     parsed_args = parser.parse_args()
-    print(parsed_args)
 
     if parsed_args.command == 'config':
         opt, value = parsed_args.opt, parsed_args.value

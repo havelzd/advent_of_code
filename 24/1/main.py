@@ -1,5 +1,9 @@
 import sys
 
+"""
+Parse input given as two columns (two lists of numbers)
+Compare the diff between the lists
+"""
 args = sys.argv
 
 counts = {}

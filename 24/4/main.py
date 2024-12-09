@@ -33,21 +33,15 @@ def solve_p1(lines):
 
 
 def solve_p2(lines):
-    """
-    Find all occurences of X shaped like pattern 'MAX' on three lines like on the following example:
-    M.S
-    .A.
-    M.S
-    """
     p2 = 0
 
-    for i in range(len(lines) - 2):  # Stop at len(lines) - 2 to avoid index error
+    for i in range(len(lines) - 2):
         line1 = lines[i]
         line2 = lines[i + 1]
         line3 = lines[i + 2]
 
         # Ensure lines have enough length for the pattern
-        for j in range(1, len(line2) - 1):  # 'A' should be in the middle, so start from 1
+        for j in range(1, len(line2) - 1):
             # Check Diagonal 1 (top-left to bottom-right)
             diag1_mas = (line1[j - 1] == 'M' and line2[j]
                          == 'A' and line3[j + 1] == 'S')
@@ -71,4 +65,3 @@ def solve_p2(lines):
 with open(sys.argv[1]) as f:
     lines = f.readlines()
     solve_p2(lines)
-

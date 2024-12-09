@@ -73,10 +73,11 @@ def __submit_solution(year, day, level, value, session):
 
 
 def __fetch_input(year, day, session, input_dir):
+    os.makedirs(f"{year}/{day}/{input_dir}", exist_ok=True)
     year_full = year if year >= 2000 else year + 2000
     curl_cmd = f"curl -H 'Cookie: session={session}' " + \
         f"https://adventofcode.com/{year_full}/day/{day}/input" + \
-        f" > {year}/{day}/{input_dir}"
+        f" > {year}/{day}/{input_dir}/input.txt"
     return os.system(curl_cmd)
 
 

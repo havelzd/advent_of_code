@@ -1,10 +1,6 @@
 import sys
 
 args = sys.argv
-
-p1 = 0
-p2 = 0
-
 DIRECTIONS = [
     ((0, 1), 'c'),
     ((0, -1), 'c'),
@@ -13,8 +9,27 @@ DIRECTIONS = [
 ]
 
 
-def get_num_lines(tuples: set[tuple[int, int]], c):
-    # group tuples by first element and count number of consecutive groups
+def split_into_consecutive_sequences(sequence: list[int]):
+    result = []
+    used = [False] * len(sequence)
+
+    for i in range(len(sequence)):
+        if not used[i]:
+            current_group = [sequence[i]]
+            used[i] = True
+
+            for j in range(i + 1, len(sequence)):
+                if not used[j] and sequence[j] == current_group[-1] + 1:
+                    current_group.append(sequence[j])
+                    used[j] = True
+
+            result.append(current_group)
+
+    return len(result)
+
+
+def count_lines(tuples: list[tuple[int, int]]):
+    result = 0
     grouped = {}
     for x, y in tuples:
         if x in grouped:
@@ -22,28 +37,18 @@ def get_num_lines(tuples: set[tuple[int, int]], c):
         else:
             grouped[x] = [y]
 
-    group_counts = {}
-
     for x, ys in grouped.items():
         ys.sort()  # Sort y values
-        groups = 0
-        for i in range(len(ys)):
-            if i == 0 or ys[i] != ys[i - 1] + 1:  # Start of a new group
-                groups += 1
-        group_counts[x] = groups
-    if c == 'I':
-        print(group_counts)
-    return sum(group_counts.values())
+        result += split_into_consecutive_sequences(ys)
+    return result
 
 
-def mark_garden(grid, x, y):
-    # calculate the perimeter and area of a garden for p1 "width"
-    # of the sides and area as number of cells
+def mark_garden(grid: list[list[chr]], x: int, y: int):
     visited = set()
     queue = [(x, y)]
     garden_type = grid[x][y]
     perimeter, area = 0, 0
-    rows, cols = set(), set()
+    rows, cols = [], []
 
     while queue:
         x, y = queue.pop(0)
@@ -61,22 +66,17 @@ def mark_garden(grid, x, y):
                     and grid[new_x][new_y] == garden_type:
                 queue.append((new_x, new_y))
             else:
-                if garden_type == 'I':
-                    print(f"({new_x}, {new_y}), {d}")
                 perimeter += 1
                 if d == 'r':
-                    rows.add((new_x, new_y))
+                    rows.append((new_x, new_y))
                 else:
-                    cols.add((new_y, new_x))
-    if garden_type == 'I':
-        print(f"rows: {rows}")
-        print(f"cols: {cols}")
-    num_lines = get_num_lines(rows, garden_type) + \
-        get_num_lines(cols, garden_type)
+                    cols.append((new_y, new_x))
+    num_lines = count_lines(rows) + \
+        count_lines(cols)
     return perimeter, area, visited, num_lines
 
 
-def find_gardens(grid):
+def find_gardens(grid: list[list[chr]]):
     marked = set()
     result_p1 = 0
     result_p2 = 0
@@ -84,11 +84,9 @@ def find_gardens(grid):
         for j in range(len(grid[0])):
             if (i, j) in marked:
                 continue
-            print(f"Garden [{grid[i][j]}]")
             p, a, v, lines = mark_garden(grid, i, j)
             result_p1 += a * p
             result_p2 += a * lines
-            print(f"area: {a}, perimeter: {lines}")
             marked.update(v)
     print(result_p1)
     print(result_p2)

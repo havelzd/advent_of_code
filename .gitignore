@@ -3,3 +3,8 @@ node_modules/
 session.txt
 package-lock.json
 .*config
+
+
+# Added by cargo
+
+/target
